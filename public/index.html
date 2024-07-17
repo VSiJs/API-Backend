@@ -150,62 +150,71 @@
             cell.classList.add('incomplete');
         }
     }
+   function saveData() {
+    	const data = {
+        selects: Array.from(document.querySelectorAll('select.checkbox')).map(select => select.value),
+        textareas: Array.from(document.querySelectorAll('textarea')).map(textarea => textarea.value)
+    };
 
-    function saveData() {
-        const data = {
-            selects: Array.from(document.querySelectorAll('select.checkbox')).map(select => select.value),
-            textareas: Array.from(document.querySelectorAll('textarea')).map(textarea => textarea.value)
-        };
+    	fetch('/api/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    		}).then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }).then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+}
 
-        fetch('/api/save', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        }).then(response => response.json())
-          .then(data => console.log(data))
-          .catch(error => console.error('Error:', error));
-    }
+   function loadSavedData() {
+    fetch('/api/load', {
+        method: 'GET'
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }).then(data => {
+        if (data) {
+            const selects = document.querySelectorAll('select.checkbox');
+            const textareas = document.querySelectorAll('textarea');
 
-    function loadSavedData() {
-        fetch('/api/load', {
-            method: 'GET'
-        }).then(response => response.json())
-          .then(data => {
-              if (data) {
-                  const selects = document.querySelectorAll('select.checkbox');
-                  const textareas = document.querySelectorAll('textarea');
+            data.selects.forEach((value, index) => {
+                selects[index].value = value;
+                updateCellBackground(selects[index]);
+            });
 
-                  data.selects.forEach((value, index) => {
-                      selects[index].value = value;
-                      updateCellBackground(selects[index]);
-                  });
+            data.textareas.forEach((value, index) => {
+                textareas[index].value = value;
+            });
+        }
+    }).catch(error => console.error('Error:', error));
+}
+   function clearData() {
+    document.querySelectorAll('select.checkbox').forEach(select => {
+        select.value = '';
+        updateCellBackground(select);
+    });
 
-                  data.textareas.forEach((value, index) => {
-                      textareas[index].value = value;
-                  });
-              }
-          })
-          .catch(error => console.error('Error:', error));
-    }
+    document.querySelectorAll('textarea').forEach(textarea => {
+        textarea.value = '';
+    });
 
-    function clearData() {
-        document.querySelectorAll('select.checkbox').forEach(select => {
-            select.value = '';
-            updateCellBackground(select);
-        });
-
-        document.querySelectorAll('textarea').forEach(textarea => {
-            textarea.value = '';
-        });
-
-        fetch('/api/clear', {
-            method: 'POST'
-        }).then(response => response.json())
-          .then(data => console.log(data))
-          .catch(error => console.error('Error:', error));
-    }
+    fetch('/api/clear', {
+        method: 'POST'
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }).then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+}
     </script>
 </head>
 <body>
