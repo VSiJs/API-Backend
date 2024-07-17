@@ -13,11 +13,9 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/public/$1" }
-  ]
-  {
-  "source": "/feedback/((?!general).*)",
-  "destination": "/api/feedback/general"
+  ],
   "rewrites": [
+    { "source": "/feedback/((?!general).*)", "destination": "/api/feedback/general" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
