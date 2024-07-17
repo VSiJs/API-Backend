@@ -14,4 +14,8 @@
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
+  {
+  "source": "/feedback/((?!general).*)",
+  "destination": "/api/feedback/general"
+}
 }
