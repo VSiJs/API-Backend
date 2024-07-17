@@ -6,6 +6,5 @@
     "start": "node index.js"
   },
   "dependencies": {
-    // Các phụ thuộc nếu sử dụng, ví dụ: firebase, mongodb, etc.
   }
 }
